@@ -5,192 +5,522 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Birthday Surprise</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Dancing+Script:wght@600;700&family=Outfit:wght@400;600;800&display=swap');
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', sans-serif; user-select: none; -webkit-tap-highlight-color: transparent; }
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Poppins', sans-serif; 
+            user-select: none; 
+            -webkit-tap-highlight-color: transparent; 
+        }
         
-        body { background-color: #05040a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; overflow: hidden; }
-
-        #app-container {
-            width: 100%; max-width: 400px; height: 100%; max-height: 850px; position: relative;
-            background: radial-gradient(circle at top center, #1a153a 0%, #05040a 100%);
-            overflow: hidden; display: flex; flex-direction: column; align-items: center; box-shadow: 0 0 30px rgba(0,0,0,0.8);
+        body { 
+            background: #06020e; 
+            color: #fff; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden; 
         }
 
-        /* --- Background Animations --- */
-        .bokeh { position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.04); box-shadow: 0 0 30px rgba(255, 255, 255, 0.05); animation: float 10s up infinite linear; z-index: 1; }
-        @keyframes float { 0% { transform: translateY(100vh) scale(0.5); opacity: 0; } 50% { opacity: 1; } 100% { transform: translateY(-100px) scale(1.5); opacity: 0; } }
+        #app-container {
+            width: 100%; 
+            max-width: 420px; 
+            height: 100%; 
+            max-height: 880px; 
+            position: relative;
+            background: radial-gradient(circle at 50% 10%, #290940 0%, #110521 50%, #06020e 100%);
+            overflow: hidden; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            box-shadow: 0 0 50px rgba(186, 85, 211, 0.25), 0 0 100px rgba(0,0,0,0.9);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        /* --- Ambient Glowing Orbs --- */
+        .ambient-glow {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(50px);
+            pointer-events: none;
+            opacity: 0.45;
+            z-index: 1;
+            animation: pulseGlow 8s ease-in-out infinite alternate;
+        }
+        .glow-1 { width: 180px; height: 180px; background: #e024c3; top: -20px; left: -20px; }
+        .glow-2 { width: 160px; height: 160px; background: #6366f1; bottom: 40px; right: -20px; animation-delay: -3s; }
+        @keyframes pulseGlow {
+            0% { transform: scale(1) translate(0, 0); opacity: 0.3; }
+            100% { transform: scale(1.3) translate(15px, 20px); opacity: 0.55; }
+        }
+
+        /* Bokeh Particles */
+        .bokeh { 
+            position: absolute; 
+            border-radius: 50%; 
+            background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0) 70%); 
+            animation: floatParticle 10s infinite linear; 
+            z-index: 1; 
+            pointer-events: none;
+        }
+        @keyframes floatParticle { 
+            0% { transform: translateY(105vh) scale(0.6); opacity: 0; } 
+            20% { opacity: 0.8; }
+            80% { opacity: 0.8; }
+            100% { transform: translateY(-80px) scale(1.3); opacity: 0; } 
+        }
 
         /* --- Smooth Screen Transitions --- */
         .screen {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            z-index: 10; padding: 20px; 
-            opacity: 0; pointer-events: none; transform: scale(1.05);
-            transition: opacity 0.6s ease, transform 0.6s ease;
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%;
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center;
+            z-index: 10; 
+            padding: 24px; 
+            opacity: 0; 
+            pointer-events: none; 
+            transform: scale(0.96) translateY(12px);
+            transition: opacity 0.55s cubic-bezier(0.2, 0.8, 0.2, 1), transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .screen.active { opacity: 1; pointer-events: auto; transform: scale(1); }
+        .screen.active { 
+            opacity: 1; 
+            pointer-events: auto; 
+            transform: scale(1) translateY(0); 
+        }
         
         /* Universal Back Button */
         .back-nav-btn {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            background: rgba(255, 255, 255, 0.12);
-            border: 1px solid rgba(255, 255, 255, 0.25);
-            color: #fff;
-            padding: 6px 14px;
-            border-radius: 20px;
+            top: 22px;
+            left: 22px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            color: #fce7f3;
+            padding: 7px 16px;
+            border-radius: 30px;
             font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
             z-index: 50;
             display: flex;
             align-items: center;
-            gap: 5px;
-            backdrop-filter: blur(5px);
-            transition: 0.2s;
+            gap: 6px;
+            backdrop-filter: blur(12px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            transition: 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
         .back-nav-btn:active {
             transform: scale(0.92);
-            background: rgba(255, 255, 255, 0.25);
+            background: rgba(255, 255, 255, 0.2);
         }
 
-        .btn { background: rgba(255,255,255,0.1); border: 1px solid #d463d4; color: white; padding: 12px 30px; border-radius: 25px; font-size: 16px; cursor: pointer; transition: 0.3s; margin-top: 20px;}
-        .btn:active { background: rgba(255,255,255,0.2); transform: scale(0.95); }
+        /* Buttons */
+        .btn { 
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.35) 0%, rgba(168, 85, 247, 0.35) 100%);
+            border: 1px solid rgba(244, 114, 182, 0.5); 
+            color: #ffffff; 
+            padding: 13px 34px; 
+            border-radius: 30px; 
+            font-size: 15px; 
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer; 
+            transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            margin-top: 22px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgba(236, 72, 153, 0.3), inset 0 1px 0 rgba(255,255,255,0.3);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .btn:hover {
+            box-shadow: 0 0 25px rgba(236, 72, 153, 0.55), inset 0 1px 0 rgba(255,255,255,0.5);
+            transform: translateY(-2px);
+        }
+        .btn:active { 
+            transform: scale(0.95); 
+            background: rgba(236, 72, 153, 0.5);
+        }
 
         /* S1: Gift */
-        .gift-box { font-size: 130px; filter: drop-shadow(0 0 30px rgba(255, 20, 147, 0.5)); animation: bounce 2s infinite; cursor: pointer; margin-top: 50px;}
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+        .gift-box { 
+            font-size: 135px; 
+            filter: drop-shadow(0 0 35px rgba(255, 75, 175, 0.65)); 
+            animation: bounceGift 2.4s infinite ease-in-out; 
+            cursor: pointer; 
+            margin-top: 45px;
+            transition: transform 0.3s;
+        }
+        .gift-box:active { transform: scale(0.9); }
+        @keyframes bounceGift { 
+            0%, 100% { transform: translateY(0) scale(1); } 
+            50% { transform: translateY(-22px) scale(1.05) rotate(3deg); } 
+        }
 
-        /* Falling Flowers Animation */
+        /* Falling Flowers & Confetti Animation */
         .falling-flower {
             position: absolute;
             top: -50px;
-            z-index: 25;
+            z-index: 35;
             pointer-events: none;
             animation: fallFlower linear forwards;
         }
         @keyframes fallFlower {
             0% { transform: translateY(0) rotate(0deg) scale(0.6); opacity: 0; }
             15% { opacity: 1; }
-            100% { transform: translateY(110vh) rotate(360deg) scale(1.2); opacity: 0; }
+            100% { transform: translateY(112vh) rotate(420deg) scale(1.2); opacity: 0; }
         }
 
         /* Flower Burst for Scratch Card */
         .scratch-flower {
             position: absolute;
             pointer-events: none;
-            z-index: 30;
-            animation: scratchPop 0.8s ease-out forwards;
+            z-index: 40;
+            animation: scratchPop 0.85s cubic-bezier(0.15, 0.9, 0.3, 1.2) forwards;
         }
         @keyframes scratchPop {
-            0% { transform: translate(0, 0) scale(0.5); opacity: 1; }
-            100% { transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(45deg); opacity: 0; }
+            0% { transform: translate(0, 0) scale(0.3); opacity: 1; }
+            100% { transform: translate(var(--tx), var(--ty)) scale(1.35) rotate(45deg); opacity: 0; }
         }
 
         /* S2: Passcode */
-        .time-header h1 { font-size: 60px; font-weight: 700; line-height: 1; margin-top: -10px; }
-        .pin-dots { display: flex; gap: 15px; margin: 25px 0; }
-        .dot { width: 15px; height: 15px; border-radius: 50%; border: 2px solid rgba(255,255,255,0.3); transition: 0.2s; }
-        .dot.active { background: #d463d4; border-color: #d463d4; box-shadow: 0 0 10px #d463d4; }
-        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px 25px; }
-        .key { width: 65px; height: 65px; border-radius: 50%; background: rgba(255,255,255,0.05); border: none; color: white; font-size: 26px; cursor: pointer; transition: 0.1s; }
-        .key:active { background: rgba(255,255,255,0.2); }
+        .time-header h1 { 
+            font-family: 'Outfit', sans-serif;
+            font-size: 64px; 
+            font-weight: 700; 
+            line-height: 1; 
+            margin-top: -10px;
+            background: linear-gradient(180deg, #ffffff 40%, #f472b6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .pin-dots { display: flex; gap: 16px; margin: 24px 0; }
+        .dot { 
+            width: 16px; height: 16px; 
+            border-radius: 50%; 
+            border: 2px solid rgba(255,255,255,0.3); 
+            background: rgba(255,255,255,0.05);
+            transition: all 0.25s ease; 
+        }
+        .dot.active { 
+            background: #f472b6; 
+            border-color: #f472b6; 
+            box-shadow: 0 0 15px #f472b6, 0 0 30px rgba(244, 114, 182, 0.6); 
+            transform: scale(1.15);
+        }
+        .keypad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 24px; }
+        .key { 
+            width: 66px; height: 66px; 
+            border-radius: 50%; 
+            background: rgba(255, 255, 255, 0.07); 
+            border: 1px solid rgba(255, 255, 255, 0.12); 
+            color: #ffffff; 
+            font-size: 26px; 
+            font-weight: 500;
+            cursor: pointer; 
+            transition: 0.15s ease; 
+            backdrop-filter: blur(10px);
+        }
+        .key:active { 
+            background: rgba(244, 114, 182, 0.35); 
+            border-color: rgba(244, 114, 182, 0.6);
+            transform: scale(0.92);
+        }
 
         /* S3: Doors */
         #s3 { background: #000; padding: 0; z-index: 15;}
-        .door { position: absolute; top:0; width: 50%; height: 100%; background: repeating-linear-gradient(90deg, #00008b, #0000cd 15px, #00008b 30px); transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1); z-index: 10; }
-        .door-left { left: 0; border-right: 2px solid black; }
-        .door-right { right: 0; border-left: 2px solid black; }
+        .door { 
+            position: absolute; top:0; width: 50%; height: 100%; 
+            background: linear-gradient(135deg, #180036 0%, #310757 50%, #0d001e 100%); 
+            transition: transform 2.2s cubic-bezier(0.5, 0, 0.1, 1); 
+            z-index: 10; 
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.8);
+        }
+        .door-left { left: 0; border-right: 2px solid rgba(244, 114, 182, 0.4); }
+        .door-right { right: 0; border-left: 2px solid rgba(244, 114, 182, 0.4); }
         .door-open .door-left { transform: translateX(-100%); }
         .door-open .door-right { transform: translateX(100%); }
 
         /* S4: Loading */
-        .pulse-text { font-size: 18px; color: #ffb6c1; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
+        .pulse-text { 
+            font-size: 19px; 
+            font-weight: 500;
+            color: #fbcfe8; 
+            text-shadow: 0 0 15px rgba(244, 114, 182, 0.6);
+            animation: pulse 1.6s infinite ease-in-out; 
+        }
+        @keyframes pulse { 0%, 100% { opacity: 0.45; transform: scale(0.98); } 50% { opacity: 1; transform: scale(1.02); } }
 
         /* Final Cake Screen */
-        .stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 15px 0; text-align: center; }
-        .stat-item { background: rgba(255,255,255,0.05); padding: 8px; border-radius: 10px; min-width: 45%; }
-        .stat-item h3 { color: #ffd700; font-size: 20px; }
-        .stat-item p { font-size: 10px; color: #aaa; text-transform: uppercase; }
-        .cake { font-size: 90px; margin: 10px 0; transition: 1s ease; cursor: pointer;}
-        .cake.blown { filter: grayscale(40%) brightness(0.7); transform: scale(0.95); }
+        .stats { display: flex; flex-wrap: wrap; justify-content: center; gap: 12px; margin: 16px 0; text-align: center; width: 100%; }
+        .stat-item { 
+            background: rgba(255, 255, 255, 0.06); 
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 10px; 
+            border-radius: 14px; 
+            min-width: 44%; 
+            backdrop-filter: blur(8px);
+        }
+        .stat-item h3 { 
+            color: #fbbf24; 
+            font-size: 22px; 
+            font-weight: 700;
+            font-family: 'Outfit', sans-serif;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.4);
+        }
+        .stat-item p { font-size: 11px; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.8px; margin-top: 2px;}
+        .cake { font-size: 95px; margin: 10px 0; transition: 1s ease; cursor: pointer; filter: drop-shadow(0 0 20px rgba(255, 215, 0, 0.3)); }
+        .cake.blown { filter: grayscale(50%) brightness(0.65); transform: scale(0.95); }
 
         /* Photo Frame */
         .photo-card {
-            width: 290px;
-            height: 380px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(212, 99, 212, 0.4);
-            border-radius: 20px;
-            padding: 12px;
+            width: 295px;
+            height: 385px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 2px solid rgba(244, 114, 182, 0.4);
+            border-radius: 24px;
+            padding: 14px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: space-between;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(212, 99, 212, 0.2);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 25px rgba(212, 99, 212, 0.25);
             cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s;
+            backdrop-filter: blur(14px);
+            transition: transform 0.25s;
             position: relative;
         }
-        .photo-card:active { transform: scale(0.98); }
+        .photo-card:active { transform: scale(0.97); }
         .photo-container {
             width: 100%;
             height: 290px;
-            border-radius: 14px;
+            border-radius: 16px;
             overflow: hidden;
-            background: radial-gradient(circle, #1a1530 0%, #0c0a18 100%);
+            background: radial-gradient(circle, #200d3d 0%, #0e051a 100%);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 5px;
+            padding: 4px;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.5);
         }
         .photo-container img {
             max-width: 100%;
             max-height: 100%;
             object-fit: contain;
-            border-radius: 8px;
-            transition: opacity 0.3s ease;
+            border-radius: 12px;
+            transition: opacity 0.35s ease;
         }
         .photo-caption {
             font-size: 14px;
             color: #ffd700;
-            font-weight: 500;
+            font-weight: 600;
             text-align: center;
             margin-top: 6px;
         }
         .upload-badge-btn {
-            background: rgba(212, 99, 212, 0.25);
-            border: 1px dashed #d463d4;
-            color: #ffb6c1;
-            padding: 6px 14px;
-            border-radius: 15px;
-            font-size: 11px;
+            background: rgba(244, 114, 182, 0.18);
+            border: 1px dashed #f472b6;
+            color: #fbcfe8;
+            padding: 7px 18px;
+            border-radius: 20px;
+            font-size: 12px;
             cursor: pointer;
-            margin-top: 6px;
+            margin-top: 8px;
             transition: 0.2s;
+            backdrop-filter: blur(5px);
         }
         .upload-badge-btn:hover {
-            background: rgba(212, 99, 212, 0.4);
+            background: rgba(244, 114, 182, 0.35);
         }
 
-        /* Colorful Balloons */
-        .balloons-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px 15px; margin-top: 25px; width: 100%; justify-items: center; }
-        .custom-balloon-wrapper { position: relative; cursor: pointer; animation: floatB 3s infinite ease-in-out alternate; transition: transform 0.2s, opacity 0.3s; }
-        .custom-balloon { width: 58px; height: 72px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; position: relative; box-shadow: inset -6px -6px 12px rgba(0,0,0,0.3), inset 8px 8px 12px rgba(255,255,255,0.4); display: flex; align-items: center; justify-content: center; font-size: 16px; }
-        .custom-balloon::after { content: ''; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 6px solid inherit; }
-        .balloon-string { position: absolute; bottom: -22px; left: 50%; width: 2px; height: 22px; background: rgba(255,255,255,0.4); transform-origin: top center; }
+        /* ========================================================
+           BALLOONS: AUTO-CENTERING & SMOOTH RE-ALIGNMENT
+           ======================================================== */
+        .balloons-grid { 
+            display: flex; 
+            flex-wrap: wrap; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 18px 22px; 
+            margin-top: 25px; 
+            width: 100%; 
+            max-width: 320px;
+            min-height: 180px;
+            transition: all 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+        
+        .custom-balloon-wrapper { 
+            position: relative; 
+            cursor: pointer; 
+            animation: floatB 3.2s infinite ease-in-out alternate; 
+            transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        opacity 0.35s ease, 
+                        width 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), 
+                        margin 0.45s cubic-bezier(0.2, 0.8, 0.2, 1); 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 60px;
+        }
 
-        .b-pink   { background: radial-gradient(circle at 35% 30%, #ff80bf, #ff1493, #b30059); box-shadow: 0 0 15px rgba(255, 20, 147, 0.4); }
-        .b-pink::after { border-bottom-color: #b30059; }
-        .b-purple { background: radial-gradient(circle at 35% 30%, #da70d6, #9932cc, #4b0082); box-shadow: 0 0 15px rgba(153, 50, 204, 0.4); }
-        .b-purple::after { border-bottom-color: #4b0082; }
-        .b-cyan   { background: radial-gradient(circle at 35% 30%, #a8ffeb, #00ced1, #006666); box-shadow: 0 0 15px rgba(0, 206, 209, 0.4); }
-        .b-cyan::after { border-bottom-color: #006666; }
-        .b-gold   { background: radial-gradient(circle at 35% 30%, #fff099, #ffd700, #b8860b); box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+        /* Balloon Body */
+        .custom-balloon { 
+            width: 60px; 
+            height: 75px; 
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
+            position: relative; 
+            box-shadow: inset -7px -7px 14px rgba(0,0,0,0.35), inset 9px 9px 15px rgba(255,255,255,0.45); 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 17px; 
+            transition: transform 0.2s;
+        }
+        .custom-balloon::after { 
+            content: ''; 
+            position: absolute; 
+            bottom: -6px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 0; 
+            height: 0; 
+            border-left: 5px solid transparent; 
+            border-right: 5px solid transparent; 
+            border-bottom: 6px solid inherit; 
+        }
+        .balloon-string { 
+            position: absolute; 
+            bottom: -22px; 
+            left: 50%; 
+            width: 2px; 
+            height: 24px; 
+            background: linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0.1) 100%); 
+            transform-origin: top center; 
+        }
+
+        /* Radiant Color Palettes */
+        .b-pink   { background: radial-gradient(circle at 35% 30%, #ffa5d8, #ec4899, #9d174d); box-shadow: 0 0 20px rgba(236, 72, 153, 0.55); }
+        .b-pink::after { border-bottom-color: #9d174d; }
+        
+        .b-purple { background: radial-gradient(circle at 35% 30%, #e9d5ff, #a855f7, #581c87); box-shadow: 0 0 20px rgba(168, 85, 247, 0.55); }
+        .b-purple::after { border-bottom-color: #581c87; }
+        
+        .b-cyan   { background: radial-gradient(circle at 35% 30%, #a5f3fc, #06b6d4, #155e75); box-shadow: 0 0 20px rgba(6, 182, 212, 0.55); }
+        .b-cyan::after { border-bottom-color: #155e75; }
+        
+        .b-gold   { background: radial-gradient(circle at 35% 30%, #fef08a, #eab308, #854d0e); box-shadow: 0 0 20px rgba(234, 179, 8, 0.55); }
+        .b-gold::after { border-bottom-color: #854d0e; }
+        
+        .b-rose   { background: radial-gradient(circle at 35% 30%, #fecdd3, #f43f5e, #9f1239); box-shadow: 0 0 20px rgba(244, 63, 94, 0.55); }
+        .b-rose::after { border-bottom-color: #9f1239; }
+        
+        .b-green  { background: radial-gradient(circle at 35% 30%, #bbf7d0, #10b981, #064e3b); box-shadow: 0 0 20px rgba(16, 185, 129, 0.55); }
+        .b-green::after { border-bottom-color: #064e3b; }
+
+        @keyframes floatB { 
+            0% { transform: translateY(0) rotate(-3deg); } 
+            100% { transform: translateY(-16px) rotate(4deg); } 
+        }
+        
+        /* Spark effect */
+        .pop-spark { 
+            position: absolute; 
+            font-size: 26px; 
+            animation: sparkAnim 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; 
+            pointer-events: none; 
+            z-index: 50;
+        }
+        @keyframes sparkAnim { 
+            0% { transform: scale(0.3) rotate(0deg); opacity: 1; } 
+            100% { transform: scale(2.2) rotate(45deg); opacity: 0; } 
+        }
+
+        .msg-box { 
+            background: rgba(255, 255, 255, 0.08); 
+            border: 1px solid rgba(244, 114, 182, 0.35); 
+            padding: 14px 22px; 
+            border-radius: 18px; 
+            margin-top: 25px; 
+            min-height: 65px; 
+            width: 100%;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            text-align: center; 
+            font-size: 14px; 
+            color: #fdf2f8;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+        }
+
+        /* Scratch Card */
+        .scratch-container { 
+            position: relative; 
+            width: 300px; 
+            height: 180px; 
+            border-radius: 18px; 
+            overflow: hidden; 
+            margin-top: 25px; 
+            box-shadow: 0 0 30px rgba(251, 191, 36, 0.3), 0 10px 25px rgba(0,0,0,0.6);
+            border: 2px solid rgba(251, 191, 36, 0.5);
+        }
+        .scratch-bg { 
+            position: absolute; 
+            width: 100%; height: 100%; 
+            background: radial-gradient(circle, #25103a 0%, #120520 100%); 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            text-align:center;
+        }
+        .scratch-bg h2 { 
+            color: #fbbf24; 
+            font-size: 24px; 
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(251, 191, 36, 0.5);
+        }
+        canvas { 
+            position: absolute; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            z-index: 2; 
+            cursor: crosshair; 
+        }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <!-- Ambient Lights -->
+    <div class="ambient-glow glow-1"></div>
+    <div class="ambient-glow glow-2"></div>
+
+    <!-- Floating Bokeh -->
+    <div class="bokeh" style="width: 80px; height: 80px; left: 10%; animation-duration: 8s;"></div>
+    <div class="bokeh" style="width: 50px; height: 50px; left: 65%; animation-duration: 12s; animation-delay: 2s;"></div>
+    <div class="bokeh" style="width: 65px; height: 65px; left: 35%; animation-duration: 10s; animation-delay: 4s;"></div>
+    
+    <!-- Screen 1: Gift -->
+    <div class="screen active" id="s1">
+        <h1 style="font-size: 26px; font-weight: 700; text-shadow: 0 0 15px rgba(244, 114, 182, 0.6); text-align: center;">A surprise awaits you...</h1>
+        <p style="color: #fbbf24; margin-bottom: 20px; font-size: 14px; letter-spacing: 0.5px;">✨ Something special, just for you ✨</p>
+        <div class="gift-box" onclick="openGift()">🎁</div>
+        <p id="tap-txt" class="pulse-text" style="margin-top: 45px;">Tap the gift to open 🎁</p>
+    </div>
+
+    <!-- Screen 2: Passcode -->
+    <div class="screen" id="s2">
+        <button class="back-nav-btn" onclick="nav('s2', 's1')">← Back</button>
+        <div class="time-header"><h1 id="clock">00:00</h1><p style="color: #f472b6; text-align: center; font-size: 14px; font-weight: 500;">Birthday Surprise 💝</p></div>
+        <div style="f 215, 0, 0.4); }
         .b-gold::after { border-bottom-color: #b8860b; }
         .b-rose   { background: radial-gradient(circle at 35% 30%, #ffa07a, #ff4500, #8b0000); box-shadow: 0 0 15px rgba(255, 69, 0, 0.4); }
         .b-rose::after { border-bottom-color: #8b0000; }
