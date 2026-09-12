@@ -236,12 +236,17 @@
         }
 
         .message-body {
-            font-size: 14px;
-            line-height: 1.7;
-            color: #fce7f3;
-            font-weight: 400;
-            text-align: center;
-        }
+    font-size: 14px;
+    line-height: 1.7;
+    color: #fce7f3;
+    font-weight: 400;
+    text-align: center;
+    overflow-y: auto;   /* Yeh scroll on karega */
+    max-height: 45vh;   /* Yeh box ki height limit karega */
+    padding-right: 6px;
+    -webkit-overflow-scrolling: touch;
+}
+
 
         .message-footer {
             margin-top: 18px;
